@@ -30,6 +30,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
+  extra_pedantic: any
   hive_generator: any
   build_runner: any
 
