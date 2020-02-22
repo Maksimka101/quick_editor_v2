@@ -24,6 +24,9 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: any
   hive: any
+  bloc: any
+  flutter_bloc: any
+  quick_log: any
 
 
 dev_dependencies:
