@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:quick_editor_v2/bloc/auth_bloc.dart';
 import 'package:quick_editor_v2/bloc/bloc_delegate.dart';
+import 'package:quick_editor_v2/bloc/tables_bloc.dart';
 import 'package:quick_editor_v2/ui/widget/start_app/start_app.dart';
 
 class AppInitialization extends StatefulWidget {
@@ -23,7 +25,14 @@ class _AppInitializationState extends State<AppInitialization> {
         providers: [],
         child: Builder(
           builder: (repositoryContext) => MultiBlocProvider(
-            providers: [],
+            providers: [
+              BlocProvider<AuthBloc>(
+                create: (_) => AuthBloc(),
+              ),
+              BlocProvider<TablesBloc>(
+                create: (_) => TablesBloc(),
+              )
+            ],
             child: Builder(
               builder: (blocContext) => StartApp(),
             ),
