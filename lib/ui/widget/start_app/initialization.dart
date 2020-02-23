@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quick_editor_v2/bloc/auth_bloc.dart';
 import 'package:quick_editor_v2/bloc/bloc_delegate.dart';
+import 'package:quick_editor_v2/bloc/navigation_bloc.dart';
 import 'package:quick_editor_v2/bloc/tables_bloc.dart';
 import 'package:quick_editor_v2/repository/abstract/tables_repository.dart';
 import 'package:quick_editor_v2/repository/hive/tables_repository.dart';
@@ -22,7 +23,11 @@ class _AppInitializationState extends State<AppInitialization> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(),
+      navigatorKey: NavigatorBloc.instance.navigatorKey,
+      theme: ThemeData(
+        inputDecorationTheme:
+            const InputDecorationTheme(border: OutlineInputBorder()),
+      ),
       home: MultiRepositoryProvider(
         providers: [
           RepositoryProvider<TablesRepository>(
@@ -36,7 +41,9 @@ class _AppInitializationState extends State<AppInitialization> {
                 create: (_) => AuthBloc(),
               ),
               BlocProvider<TablesBloc>(
-                create: (_) => TablesBloc(),
+                create: (_) => TablesBloc(
+                  RepositoryProvider.of<TablesRepository>(repositoryContext),
+                ),
               )
             ],
             child: Builder(

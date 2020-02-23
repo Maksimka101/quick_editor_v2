@@ -12,6 +12,7 @@ class StartApp extends StatelessWidget {
       builder: (context, state) {
         switch (state.runtimeType) {
           case AuthInitial:
+            BlocProvider.of<AuthBloc>(context).add(AuthStarted());
             return IntroLoadingScreen();
             break;
           case Authenticated:

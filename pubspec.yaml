@@ -28,7 +28,8 @@ dependencies:
   bloc: any
   flutter_bloc: any
   quick_log: any
-
+  flutter_slidable: any
+  flutter_speed_dial: any
 
 dev_dependencies:
   flutter_test:

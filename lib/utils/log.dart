@@ -8,17 +8,17 @@ class Log {
   }
 
   static void error(String message, [String extraMessage]) =>
-      _logger.error("$message${extraMessage != null ? '\n$extraMessage' : ''}");
+      _logger.error("$message${extraMessage != null ? '$extraMessage' : ''}");
 
   static void info(String message, [String extraMessage]) =>
-      _logger.info("$message${extraMessage != null ? '\n$extraMessage' : ''}");
+      _logger.info("$message${extraMessage != null ? '$extraMessage' : ''}");
 
   static void debug(String message, [String extraMessage]) =>
-      _logger.debug("$message${extraMessage != null ? '\n$extraMessage' : ''}");
+      _logger.debug("$message${extraMessage != null ? '$extraMessage' : ''}");
 
-  static void warning(String message, [String extraMessage]) => _logger
-      .warning("$message${extraMessage != null ? '\n$extraMessage' : ''}");
+  static void warning(String message, [String extraMessage]) =>
+      _logger.warning("$message${extraMessage != null ? '$extraMessage' : ''}");
 
   static void fine(String message, [String extraMessage]) =>
-      _logger.fine("$message${extraMessage != null ? '\n$extraMessage' : ''}");
+      _logger.fine("$message${extraMessage != null ? '$extraMessage' : ''}");
 }

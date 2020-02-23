@@ -28,10 +28,12 @@ class AuthStarted extends AuthEvent {}
 
 abstract class AuthState {}
 
-class AuthInitial extends AuthState {}
+abstract class AuthUiState extends AuthState {}
 
-class Authenticated extends AuthState {}
+class AuthInitial extends AuthUiState {}
 
-class Unauthenticated extends AuthState {}
+class Authenticated extends AuthUiState {}
 
-class Uninitialized extends AuthState {}
+class Unauthenticated extends AuthUiState {}
+
+class Uninitialized extends AuthUiState {}
