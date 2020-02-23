@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quick_editor_v2/bloc/auth_bloc.dart';
 import 'package:quick_editor_v2/bloc/bloc_delegate.dart';
 import 'package:quick_editor_v2/bloc/tables_bloc.dart';
+import 'package:quick_editor_v2/repository/abstract/tables_repository.dart';
+import 'package:quick_editor_v2/repository/hive/tables_repository.dart';
 import 'package:quick_editor_v2/ui/widget/start_app/start_app.dart';
 
 class AppInitialization extends StatefulWidget {
@@ -22,7 +24,11 @@ class _AppInitializationState extends State<AppInitialization> {
     return MaterialApp(
       theme: ThemeData(),
       home: MultiRepositoryProvider(
-        providers: [],
+        providers: [
+          RepositoryProvider<TablesRepository>(
+            create: (_) => TablesRepositoryHiveImpl(),
+          )
+        ],
         child: Builder(
           builder: (repositoryContext) => MultiBlocProvider(
             providers: [
