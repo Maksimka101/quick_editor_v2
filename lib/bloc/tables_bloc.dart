@@ -65,8 +65,8 @@ class TablesBloc extends Bloc<TablesEvent, TablesState> {
   }
 
   Stream<TablesState> _mapTablesReorderedToState(TablesReordered event) async* {
-    await _tablesRepository.updateTable(event.first);
-    await _tablesRepository.updateTable(event.second);
+    await _tablesRepository.removeAll();
+    await _tablesRepository.addAll(event.reorderedTables);
   }
 }
 
@@ -93,19 +93,18 @@ class TableUpdated extends TablesEvent {
 }
 
 class TablesReordered extends TablesEvent {
-  final Table first;
-  final Table second;
+  final List<Table> reorderedTables;
 
-  TablesReordered(this.first, this.second);
+  TablesReordered(this.reorderedTables);
 }
 
 abstract class TablesState {}
 
-abstract class TablesUiState {}
+abstract class TablesUiState extends TablesState {}
 
-class TablesInitial extends TablesState {}
+class TablesInitial extends TablesUiState {}
 
-class TablesLoaded extends TablesState {
+class TablesLoaded extends TablesUiState {
   final List<Table> tables;
 
   TablesLoaded(this.tables);

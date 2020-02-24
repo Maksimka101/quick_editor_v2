@@ -5,6 +5,7 @@ abstract class Table {
 
   Table(this.name, this.countersCount, this.position);
 
+  /// It should delete old object from the storage
   Table copyWith({String name, int countersCount, int position});
 
   @override

@@ -25,8 +25,16 @@ class _AppInitializationState extends State<AppInitialization> {
     return MaterialApp(
       navigatorKey: NavigatorBloc.instance.navigatorKey,
       theme: ThemeData(
-        inputDecorationTheme:
-            const InputDecorationTheme(border: OutlineInputBorder()),
+        appBarTheme: const AppBarTheme(
+          color: Colors.indigo,
+          elevation: 3,
+        ),
+        floatingActionButtonTheme: const FloatingActionButtonThemeData(
+          backgroundColor: Colors.indigo,
+        ),
+        inputDecorationTheme: const InputDecorationTheme(
+          border: OutlineInputBorder(),
+        ),
       ),
       home: MultiRepositoryProvider(
         providers: [

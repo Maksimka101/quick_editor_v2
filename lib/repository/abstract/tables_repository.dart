@@ -5,7 +5,11 @@ abstract class TablesRepository {
 
 	Future<void> createTable(Table table);
 
+	Future<void> addAll(List<Table> newTables);
+
 	Future<void> updateTable(Table table);
+
+	Future<void> removeAll();
 
 	Future<void> deleteTable(Table table);
 

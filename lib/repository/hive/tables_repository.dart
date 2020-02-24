@@ -26,7 +26,7 @@ class TablesRepositoryHiveImpl extends TablesRepository {
   Future<void> updateTable(Table table) async {
     final box = await _getBox();
     if (!box.values.any((element) => element.name == table.name)) {
-      await (table as TableHiveImpl).save();
+      await box.add(table);
     } else {
       throw NameExist();
     }
@@ -48,4 +48,16 @@ class TablesRepositoryHiveImpl extends TablesRepository {
 
   @override
   Table get emptyTable => TableHiveImpl('', 0, -1);
+
+  @override
+  Future<void> addAll(List<Table> newTables) async {
+    final box = await _getBox();
+    await box.addAll(newTables);
+  }
+
+  @override
+  Future<void> removeAll() async {
+    final box = await _getBox();
+    await box.deleteAll(box.keys);
+  }
 }

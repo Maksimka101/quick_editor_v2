@@ -3,23 +3,23 @@ import 'package:quick_editor_v2/bloc/navigation_bloc.dart';
 import 'package:quick_editor_v2/model/abstract/table_item.dart' as ct;
 import 'package:quick_editor_v2/utils/validators/table_settings.dart';
 
-void showTableSettingsBottomSheet(BuildContext context, ct.Table table,
-    void Function(ct.Table table) onUpdate) {
-  var _table = table;
+class TableSettings extends StatelessWidget {
   final _settingsValidator = TableSettingsValidator();
   final _formKey = GlobalKey<FormState>();
+  final ct.Table table;
+  final void Function(ct.Table table) onUpdate;
 
+  TableSettings({Key key, this.table, this.onUpdate}) : super(key: key);
   void _save() {
     if (_formKey.currentState.validate()) {
-      _table = _table.copyWith(name: _settingsValidator.tableName);
-      onUpdate(_table);
+      onUpdate(table.copyWith(name: _settingsValidator.tableName));
       NavigatorBloc.instance.add(Pop());
     }
   }
 
-  showBottomSheet<Widget>(
-    context: context,
-    builder: (context) => Padding(
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5),
       child: SingleChildScrollView(
         child: Form(
@@ -29,6 +29,7 @@ void showTableSettingsBottomSheet(BuildContext context, ct.Table table,
             children: <Widget>[
               const SizedBox(height: 3),
               TextFormField(
+                initialValue: table.name,
                 decoration:
                     const InputDecoration(labelText: "Counter table name"),
                 validator: _settingsValidator.tableNameValidator,
@@ -41,6 +42,6 @@ void showTableSettingsBottomSheet(BuildContext context, ct.Table table,
           ),
         ),
       ),
-    ),
-  );
+    );
+  }
 }

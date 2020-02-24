@@ -21,7 +21,11 @@ class TableHiveImpl extends Table with HiveObject {
       : super(name, countersCount, position);
 
   @override
-  Table copyWith({String name, int countersCount, int position}) =>
-      TableHiveImpl(name ?? this.name, countersCount ?? this.countersCount,
-          position ?? this.position);
+  Table copyWith({String name, int countersCount, int position}) {
+    if (isInBox) {
+      this.delete();
+    }
+    return TableHiveImpl(name ?? this.name, countersCount ?? this.countersCount,
+        position ?? this.position);
+  }
 }
