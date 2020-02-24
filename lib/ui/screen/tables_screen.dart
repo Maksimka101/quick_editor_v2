@@ -24,6 +24,35 @@ class _TablesScreenState extends State<TablesScreen> {
     super.initState();
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<TablesBloc, TablesState>(
+      condition: (_, state) => state is TablesUiState,
+      builder: (context, state) {
+        switch (state.runtimeType) {
+          case TablesInitial:
+            return const _TablesLoadingScreen();
+            break;
+          case TablesLoaded:
+            return TablesListScreen(
+              tables: (state as TablesLoaded).tables,
+            );
+          default:
+            Log.warning("Uncknow state: $state");
+            return const ErrorMessage();
+            break;
+        }
+      },
+    );
+  }
+}
+
+class TablesListScreen extends StatelessWidget {
+  final List<ct.Table> tables;
+  final _scrollController = ScrollController();
+
+  TablesListScreen({Key key, this.tables}) : super(key: key);
+
   void _listenForAlert(BuildContext context, TablesState state) {
     switch (state.runtimeType) {
       case TableError:
@@ -38,39 +67,6 @@ class _TablesScreenState extends State<TablesScreen> {
         );
     }
   }
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocListener<TablesBloc, TablesState>(
-      condition: (_, state) => !(state is TablesUiState),
-      listener: _listenForAlert,
-      child: BlocBuilder<TablesBloc, TablesState>(
-        condition: (_, state) => state is TablesUiState,
-        builder: (context, state) {
-          switch (state.runtimeType) {
-            case TablesInitial:
-              return const _TablesLoadingScreen();
-              break;
-            case TablesLoaded:
-              return TablesListScreen(
-                tables: (state as TablesLoaded).tables,
-              );
-            default:
-              Log.warning("Uncknow state: $state");
-              return const ErrorMessage();
-              break;
-          }
-        },
-      ),
-    );
-  }
-}
-
-class TablesListScreen extends StatelessWidget {
-  final List<ct.Table> tables;
-  final _scrollController = ScrollController();
-
-  TablesListScreen({Key key, this.tables}) : super(key: key);
 
   void _openTableScreen(ct.Table table, BuildContext context) {
     // todo
@@ -93,22 +89,26 @@ class TablesListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext c) {
     var context = c;
-    return FabScaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Text(AppSettings.appName),
+    return BlocListener<TablesBloc, TablesState>(
+      condition: (_, state) => !(state is TablesUiState),
+      listener: (_, state) => _listenForAlert(context, state),
+      child: FabScaffold(
+        appBar: AppBar(
+          automaticallyImplyLeading: false,
+          title: Text(AppSettings.appName),
+        ),
+        body: Builder(builder: (c) {
+          context = c;
+          return TablesList(
+            tables: tables,
+            scrollController: _scrollController,
+            openTableScreen: (table) => _openTableScreen(table, context),
+          );
+        }),
+        fabChild: Icon(Icons.add),
+        onFabTab: () => _createTable(context),
+        scrollController: _scrollController,
       ),
-      body: Builder(builder: (c) {
-        context = c;
-        return TablesList(
-          tables: tables,
-          scrollController: _scrollController,
-          openTableScreen: (table) => _openTableScreen(table, context),
-        );
-      }),
-      fabChild: Icon(Icons.add),
-      onFabTab: () => _createTable(context),
-      scrollController: _scrollController,
     );
   }
 }
