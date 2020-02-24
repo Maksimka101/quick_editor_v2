@@ -26,16 +26,25 @@ class NavigatorBloc {
         if (bottomSheetsEvent.context != null) {
           Scaffold.of(bottomSheetsEvent.context)
               .showBottomSheet<Widget>((_) => bottomSheetsEvent.child);
+        } else if (bottomSheetsEvent.scaffoldKey != null) {
+          bottomSheetsEvent.scaffoldKey.currentState
+              ?.showBottomSheet<Widget>((context) => bottomSheetsEvent.child);
+        } else {
+          Log.warning("No scaffold key and context was provided "
+              "in show bottom sheet event");
         }
-        bottomSheetsEvent?.scaffoldKey?.currentState
-            ?.showBottomSheet<Widget>((context) => bottomSheetsEvent.child);
         break;
       case ShowSnackBar:
         final snackEvent = event as ShowSnackBar;
         if (snackEvent.context != null) {
           Scaffold.of(snackEvent.context).showSnackBar(snackEvent.snackBar);
+        } else if (snackEvent.scaffoldKey != null) {
+          snackEvent.scaffoldKey.currentState
+              ?.showSnackBar(snackEvent.snackBar);
+        } else {
+          Log.warning(
+              "No scaffold key and context was provided in show snck event");
         }
-        snackEvent.scaffoldKey?.currentState?.showSnackBar(snackEvent.snackBar);
         break;
       default:
         Log.warning("Navigation bloc uncknown event: ", event.toString());
@@ -57,7 +66,8 @@ class ShowBottomSheet extends NavigatorEvent {
   final BuildContext context;
   final Widget child;
 
-  ShowBottomSheet({this.child, this.context, this.scaffoldKey});
+  ShowBottomSheet({this.child, this.context, this.scaffoldKey})
+      : assert(scaffoldKey == null && context == null);
 }
 
 class ShowSnackBar extends NavigatorEvent {
@@ -65,7 +75,8 @@ class ShowSnackBar extends NavigatorEvent {
   final BuildContext context;
   final SnackBar snackBar;
 
-  ShowSnackBar({this.scaffoldKey, this.context, this.snackBar});
+  ShowSnackBar({this.scaffoldKey, this.context, this.snackBar})
+      : assert(scaffoldKey == null && context == null);
 }
 
 class Pop extends NavigatorEvent {
