@@ -38,7 +38,8 @@ class TablesBloc extends Bloc<TablesEvent, TablesState> {
 
   Stream<TablesState> _mapLoadTablesToState() async* {
     final tables = await _tablesRepository.allTables();
-    yield TablesLoaded(tables);
+    yield TablesLoaded(tables
+      ..sort((first, second) => first.position.compareTo(second.position)));
   }
 
   Stream<TablesState> _mapTableCreatedToState(TableCreated event) async* {

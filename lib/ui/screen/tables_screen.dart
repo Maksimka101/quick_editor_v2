@@ -88,8 +88,6 @@ class TablesListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext c) {
-    print('TablesListScreen.build');
-    print(_scrollController.hashCode);
     var context = c;
     return BlocListener<TablesBloc, TablesState>(
       condition: (_, state) => !(state is TablesUiState),
@@ -100,7 +98,6 @@ class TablesListScreen extends StatelessWidget {
           title: Text(AppSettings.appName),
         ),
         body: Builder(builder: (scaffoldContext) {
-          print('TablesListScreen.build new context');
           context = scaffoldContext;
           return TablesList(
             tables: tables,

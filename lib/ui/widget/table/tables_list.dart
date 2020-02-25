@@ -23,6 +23,8 @@ class TablesList extends StatefulWidget {
 }
 
 class _TablesListState extends State<TablesList> {
+  final _slideController = SlidableController();
+
   void _onReorder(int prevPosition, int currentPosition, BuildContext context) {
     if (prevPosition < currentPosition) {
       // removing the item at oldIndex will shorten the list by 1.
@@ -43,12 +45,11 @@ class _TablesListState extends State<TablesList> {
 
   @override
   Widget build(BuildContext context) {
-    print('_TablesListState.build');
-    print(widget.scrollController.hashCode);
     final tablesList = ReorderableListView(
       onReorder: (prev, current) => _onReorder(prev, current, context),
       children: widget.tables
           .map<Widget>((table) => Slidable(
+                controller: _slideController,
                 key: Key(table.hashCode.toString()),
                 actionPane: const SlidableDrawerActionPane(),
                 actions: <Widget>[

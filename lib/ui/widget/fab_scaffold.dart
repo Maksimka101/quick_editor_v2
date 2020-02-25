@@ -28,7 +28,6 @@ class _FabScaffoldState extends State<FabScaffold> {
   var _fabVisible = true;
 
   void _listenForScroll() => widget.scrollController.addListener(() {
-        print('_FabScaffoldState.initState');
         _fabVisible = widget.scrollController.position.userScrollDirection ==
             ScrollDirection.forward;
         setState(() {});
@@ -36,12 +35,11 @@ class _FabScaffoldState extends State<FabScaffold> {
 
   @override
   Widget build(BuildContext context) {
-    print('_FabScaffoldState.build');
-    print(widget.scrollController.hashCode);
     _listenForScroll();
     return Scaffold(
       appBar: widget.appBar,
       body: widget.body,
+      resizeToAvoidBottomInset: true,
       // Если использовать SpeedDial без обертеки в виде FAB, то он будет
       // не корректно реагировать на bottom sheets
       floatingActionButton: FloatingActionButton(
