@@ -27,19 +27,18 @@ class FabScaffold extends StatefulWidget {
 class _FabScaffoldState extends State<FabScaffold> {
   var _fabVisible = true;
 
-  @override
-  void initState() {
-    widget.scrollController.addListener(() {
-      print('_FabScaffoldState.initState');
-      _fabVisible = widget.scrollController.position.userScrollDirection ==
-          ScrollDirection.forward;
-      setState(() {});
-    });
-    super.initState();
-  }
+  void _listenForScroll() => widget.scrollController.addListener(() {
+        print('_FabScaffoldState.initState');
+        _fabVisible = widget.scrollController.position.userScrollDirection ==
+            ScrollDirection.forward;
+        setState(() {});
+      });
 
   @override
   Widget build(BuildContext context) {
+    print('_FabScaffoldState.build');
+    print(widget.scrollController.hashCode);
+    _listenForScroll();
     return Scaffold(
       appBar: widget.appBar,
       body: widget.body,

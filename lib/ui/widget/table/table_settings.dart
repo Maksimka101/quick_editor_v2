@@ -29,7 +29,9 @@ class TableSettings extends StatelessWidget {
             children: <Widget>[
               const SizedBox(height: 3),
               TextFormField(
-                initialValue: table.name,
+                initialValue: table.name.isEmpty
+                    ? "Table ${table.position + 1}"
+                    : table.name,
                 decoration:
                     const InputDecoration(labelText: "Counter table name"),
                 validator: _settingsValidator.tableNameValidator,

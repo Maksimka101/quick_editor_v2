@@ -43,6 +43,8 @@ class _TablesListState extends State<TablesList> {
 
   @override
   Widget build(BuildContext context) {
+    print('_TablesListState.build');
+    print(widget.scrollController.hashCode);
     final tablesList = ReorderableListView(
       onReorder: (prev, current) => _onReorder(prev, current, context),
       children: widget.tables

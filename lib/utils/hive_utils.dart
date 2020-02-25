@@ -11,6 +11,7 @@ class HiveUtils {
   static const TABLES_BOX = 'tables_box';
 
   static final HiveUtils instance = HiveUtils._();
+
   HiveUtils._();
 
   var _inited = false;

@@ -67,7 +67,7 @@ class ShowBottomSheet extends NavigatorEvent {
   final Widget child;
 
   ShowBottomSheet({this.child, this.context, this.scaffoldKey})
-      : assert(scaffoldKey == null && context == null);
+      : assert(scaffoldKey == null || context == null);
 }
 
 class ShowSnackBar extends NavigatorEvent {
@@ -76,7 +76,7 @@ class ShowSnackBar extends NavigatorEvent {
   final SnackBar snackBar;
 
   ShowSnackBar({this.scaffoldKey, this.context, this.snackBar})
-      : assert(scaffoldKey == null && context == null);
+      : assert(scaffoldKey == null || context == null);
 }
 
 class Pop extends NavigatorEvent {
