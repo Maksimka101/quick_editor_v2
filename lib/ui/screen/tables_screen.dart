@@ -86,6 +86,9 @@ class TablesListScreen extends StatelessWidget {
         ),
       );
 
+  void _deleteTable(ct.Table table, BuildContext context) =>
+      BlocProvider.of<TablesBloc>(context).add(TableDeleted(table));
+
   @override
   Widget build(BuildContext c) {
     var context = c;
@@ -95,14 +98,15 @@ class TablesListScreen extends StatelessWidget {
       child: FabScaffold(
         appBar: AppBar(
           automaticallyImplyLeading: false,
-          title: Text(AppSettings.appName),
+          title: Text(App.appName),
         ),
         body: Builder(builder: (scaffoldContext) {
           context = scaffoldContext;
           return TablesList(
+            onDelete: (table) => _deleteTable(table, context),
             tables: tables,
             scrollController: _scrollController,
-            openTableScreen: (table) => _openTableScreen(table, context),
+            onTableTapped: (table) => _openTableScreen(table, context),
           );
         }),
         fabChild: Icon(Icons.add),
@@ -119,7 +123,7 @@ class _TablesLoadingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppSettings.appName),
+        title: Text(App.appName),
       ),
       body: const Center(
         child: CircularProgressIndicator(),

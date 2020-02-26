@@ -52,7 +52,14 @@ class TablesBloc extends Bloc<TablesEvent, TablesState> {
   }
 
   Stream<TablesState> _mapTableDeletedToState(TableDeleted event) async* {
-    await _tablesRepository.deleteTable(event.table);
+    final allTables = await _tablesRepository.allTables();
+    allTables.remove(event.table);
+    final updatedTables = <Table>[];
+    for (int i = 0; i < allTables.length; i++) {
+      updatedTables.add(allTables[i].copyWith(position: i));
+    }
+    await _tablesRepository.removeAll();
+    await _tablesRepository.addAll(updatedTables);
     yield* _mapLoadTablesToState();
   }
 

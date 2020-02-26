@@ -15,4 +15,9 @@ abstract class Table {
 
   @override
   int get hashCode => name.hashCode;
+
+  @override
+  String toString() {
+    return 'Table{name: $name, countersCount: $countersCount, position: $position}';
+  }
 }

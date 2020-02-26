@@ -6,24 +6,31 @@ import 'package:quick_editor_v2/bloc/tables_bloc.dart';
 import 'package:quick_editor_v2/model/abstract/table_item.dart' as ct;
 import 'package:quick_editor_v2/ui/widget/table/table_item.dart';
 import 'package:quick_editor_v2/ui/widget/table/table_settings.dart';
+import 'package:quick_editor_v2/utils/app_settings.dart';
+import 'package:snappable/snappable.dart';
 
 class TablesList extends StatefulWidget {
   final List<ct.Table> tables;
-  final void Function(ct.Table table) openTableScreen;
+  final void Function(ct.Table table) onTableTapped;
+  final void Function(ct.Table table) onDelete;
   final ScrollController scrollController;
 
   const TablesList({
     Key key,
     @required this.tables,
-    this.openTableScreen,
+    this.onTableTapped,
     this.scrollController,
+    @required this.onDelete,
   }) : super(key: key);
+
   @override
   _TablesListState createState() => _TablesListState();
 }
 
 class _TablesListState extends State<TablesList> {
   final _slideController = SlidableController();
+  final _deletingDuration = const Duration(milliseconds: 500);
+  ct.Table _tableToDelete;
 
   void _onReorder(int prevPosition, int currentPosition, BuildContext context) {
     if (prevPosition < currentPosition) {
@@ -43,50 +50,72 @@ class _TablesListState extends State<TablesList> {
     BlocProvider.of<TablesBloc>(context).add(TablesReordered(tables));
   }
 
+  /// start delete animation
+  Future<void> _onDelete(
+      ct.Table table, GlobalKey<SnappableState> snapKey) async {
+    if (App.settings.useSnapOnDelete) {
+      await snapKey.currentState.snap();
+      await Future<dynamic>.delayed(snapKey.currentState.widget.duration);
+    }
+    _tableToDelete = table;
+    setState(() {});
+    await Future<dynamic>.delayed(_deletingDuration);
+  }
+
   @override
   Widget build(BuildContext context) {
     final tablesList = ReorderableListView(
       onReorder: (prev, current) => _onReorder(prev, current, context),
-      children: widget.tables
-          .map<Widget>((table) => Slidable(
-                controller: _slideController,
-                key: Key(table.hashCode.toString()),
-                actionPane: const SlidableDrawerActionPane(),
-                actions: <Widget>[
-                  IconSlideAction(
-                    color: Colors.redAccent,
-                    caption: "Delete",
-                    icon: Icons.delete,
-                    onTap: () => BlocProvider.of<TablesBloc>(context)
-                        .add(TableDeleted(table)),
-                  )
-                ],
-                secondaryActions: <Widget>[
-                  IconSlideAction(
-                    color: Colors.green[600],
-                    caption: "Settings",
-                    icon: Icons.settings,
+      children: widget.tables.map<Widget>((table) {
+        print(table.toString());
+        final snapKye = GlobalKey<SnappableState>();
+        return Snappable(
+          key: snapKye,
+          child: Slidable(
+            controller: _slideController,
+            key: Key("slidable${table.hashCode}"),
+            actionPane: const SlidableDrawerActionPane(),
+            actions: <Widget>[
+              IconSlideAction(
+                  key: Key("slidableDeleteIcon${table.hashCode}"),
+                  color: Colors.redAccent,
+                  caption: "Delete",
+                  icon: Icons.delete,
+                  closeOnTap: false,
+                  onTap: () => _onDelete(table, snapKye))
+            ],
+            secondaryActions: <Widget>[
+              IconSlideAction(
+                key: Key("slidableSettingsIcon${table.hashCode}"),
+                color: Colors.green[600],
+                caption: "Settings",
+                icon: Icons.settings,
 //                          foregroundColor: Colors.white,
-                    onTap: () => NavigatorBloc.instance.add(
-                      ShowBottomSheet(
-                        context: context,
-                        child: TableSettings(
-                          table: table,
-                          onUpdate: (updatedTable) =>
-                              BlocProvider.of<TablesBloc>(context)
-                                  .add(TableUpdated(updatedTable)),
-                        ),
-                      ),
+                onTap: () => NavigatorBloc.instance.add(
+                  ShowBottomSheet(
+                    context: context,
+                    child: TableSettings(
+                      table: table,
+                      onUpdate: (updatedTable) =>
+                          BlocProvider.of<TablesBloc>(context)
+                              .add(TableUpdated(updatedTable)),
                     ),
                   ),
-                ],
-                child: CounterTableWidget(
-                  table: table,
-                  onTap: () => widget.openTableScreen(table),
                 ),
-              ))
-          .toList(),
+              ),
+            ],
+            child: CounterTableWidget(
+              onDeleteAnimationEnded: () => widget.onDelete(table),
+              runDeleteAnimation: table == _tableToDelete,
+              key: Key("counterTable${table.hashCode}"),
+              table: table,
+              onTap: () => widget.onTableTapped(table),
+            ),
+          ),
+        );
+      }).toList(),
     );
+    _tableToDelete = null;
     if (widget.scrollController != null) {
       return PrimaryScrollController(
         controller: widget.scrollController,
