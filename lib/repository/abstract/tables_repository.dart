@@ -1,19 +1,18 @@
 import 'package:quick_editor_v2/model/abstract/table_item.dart';
 
 abstract class TablesRepository {
+
+	/// just return all tables
 	Future<List<Table>> allTables();
 
-	Future<void> createTable(Table table);
+	/// save table and return it with id
+	Future<Table> save(Table table);
 
-	Future<void> addAll(List<Table> newTables);
+	/// remove table
+	Future<void> remove(Table table);
 
-	Future<void> updateTable(Table table);
+	/// reorder ALL the tables and return tables maybe with new ids
+	Future<List<Table>> reorder(List<Table> tables);
 
-	Future<void> removeAll();
-
-	Future<void> deleteTable(Table table);
-
-	Table get emptyTable;
+	Table get newTable;
 }
-
-class NameExist implements Exception {}

@@ -8,11 +8,14 @@ abstract class CounterRepository {
 
   Future<List<CounterItem>> allCounterItems();
 
-  Future<void> createCounterItem(CounterItem item);
+  /// save counter item and return a copy of it with id
+  Future<CounterItem> saveCounterItem(CounterItem item);
 
-  Future<void> updateCounterItem(CounterItem item);
-
+  /// just delete a counter item
   Future<void> deleteCounterItem(CounterItem item);
 
-  Future<void> closeRepository();
+  /// free all resources
+  /// close all connections
+  /// save the world
+  Future<void> dispose();
 }

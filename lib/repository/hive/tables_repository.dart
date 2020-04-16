@@ -6,6 +6,7 @@ import 'package:quick_editor_v2/utils/hive_utils.dart';
 
 class TablesRepositoryHiveImpl extends TablesRepository {
   var _boxOpened = false;
+
   @override
   Future<List<Table>> allTables() async {
     final box = await _getBox();
@@ -13,28 +14,52 @@ class TablesRepositoryHiveImpl extends TablesRepository {
   }
 
   @override
-  Future<void> createTable(Table table) async {
-    final box = await _getBox();
-    if (!box.values.any((element) => element.name == table.name)) {
-      await box.add(table);
-    } else {
-      throw NameExist();
+  Future<void> remove(Table table) async {
+    if (!(table is TableHiveImpl)) {
+      throw Exception(
+          'Table type must be a TableHiveImpl but given is ${table.runtimeType}');
     }
+    final box = await _getBox();
+    await box.delete(table.id);
   }
 
   @override
-  Future<void> updateTable(Table table) async {
-    final box = await _getBox();
-    if (!box.values.any((element) => element.name == table.name)) {
-      await box.add(table);
-    } else {
-      throw NameExist();
+  Future<List<Table>> reorder(List<Table> tables) async {
+    if (tables.any((element) => !(element is TableHiveImpl))) {
+      throw Exception(
+          'Table type must be a TableHiveImpl but given is ${tables[0].runtimeType}');
     }
+    final box = await _getBox();
+    final unorderedTables = box.values.toList();
+    if (unorderedTables.length != tables.length) {
+      throw Exception(
+          "Lenght of tables in db and incoming tables are not the same");
+    }
+    for (var i = 0; i < unorderedTables.length; i++) {
+      if (unorderedTables[i] != tables[i]) {
+        await box.delete(unorderedTables[i].id);
+        await box.put(tables[i].id, tables[i]);
+      }
+    }
+    return box.values.toList();
   }
 
   @override
-  Future<void> deleteTable(Table table) async {
-    await (table as TableHiveImpl).delete();
+  Future<Table> save(Table table) async {
+    if (!(table is TableHiveImpl)) {
+      throw Exception(
+          'Table type must be a TableHiveImpl but given is ${table.runtimeType}');
+    }
+    final box = await _getBox();
+    if (table.id == null) {
+      final tableId = await box.add(table);
+      final tableWithId = table.copyWith(id: tableId);
+      await box.put(tableId, tableWithId);
+      return tableWithId;
+    } else {
+      await box.put(table.id, table);
+      return table;
+    }
   }
 
   Future<Box<Table>> _getBox() async {
@@ -47,17 +72,5 @@ class TablesRepositoryHiveImpl extends TablesRepository {
   }
 
   @override
-  Table get emptyTable => TableHiveImpl('', 0, -1);
-
-  @override
-  Future<void> addAll(List<Table> newTables) async {
-    final box = await _getBox();
-    await box.addAll(newTables);
-  }
-
-  @override
-  Future<void> removeAll() async {
-    final box = await _getBox();
-    await box.deleteAll(box.keys);
-  }
+  Table get newTable => TableHiveImpl();
 }

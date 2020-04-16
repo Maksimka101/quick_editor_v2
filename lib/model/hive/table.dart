@@ -1,10 +1,15 @@
 import 'package:hive/hive.dart';
 
 import '../abstract/table_item.dart';
+
 part 'table.g.dart';
 
 @HiveType(typeId: 0)
-class TableHiveImpl extends Table with HiveObject {
+class TableHiveImpl extends Table {
+  @override
+  @HiveField(3)
+  final int id;
+
   @override
   @HiveField(0)
   final String name;
@@ -17,15 +22,15 @@ class TableHiveImpl extends Table with HiveObject {
   @HiveField(2)
   final int position;
 
-  TableHiveImpl(this.name, this.countersCount, this.position)
-      : super(name, countersCount, position);
+  @override
+  TableHiveImpl({this.id, this.name, this.countersCount, this.position});
 
   @override
-  Table copyWith({String name, int countersCount, int position}) {
-    if (isInBox) {
-      this.delete();
-    }
-    return TableHiveImpl(name ?? this.name, countersCount ?? this.countersCount,
-        position ?? this.position);
+  Table copyWith({String name, int countersCount, int position, int id}) {
+    return TableHiveImpl(
+        name: name ?? this.name,
+        countersCount: countersCount ?? this.countersCount,
+        position: position ?? this.position,
+        id: id ?? this.id);
   }
 }

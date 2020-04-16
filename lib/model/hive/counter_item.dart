@@ -3,10 +3,15 @@ import 'package:quick_editor_v2/utils/log.dart';
 
 import '../abstract/counter.dart';
 import '../abstract/counter_item.dart';
+
 part 'counter_item.g.dart';
 
 @HiveType(typeId: 1)
-class CounterItemHiveImpl extends CounterItem with HiveObject {
+class CounterItemHiveImpl extends CounterItem {
+  @override
+  @HiveField(2)
+  final int id;
+
   @override
   @HiveField(0)
   final Counter counter;
@@ -15,29 +20,15 @@ class CounterItemHiveImpl extends CounterItem with HiveObject {
   @HiveField(1)
   final String name;
 
-  CounterItemHiveImpl(this.counter, this.name) : super(counter, name);
+  @override
+  CounterItemHiveImpl({this.id, this.counter, this.name});
 
   @override
-  Future<void> save() async {
-    if (isInBox) {
-      return super.save();
-    } else {
-      Log.error("CounterItem isn't in box", toString());
-    }
-  }
-
-  @override
-  Future<void> delete() async {
-    if (isInBox) {
-      return super.delete();
-    } else {
-      Log.error("CounterItem isn't in box", toString());
-    }
-  }
-
-  @override
-  CounterItem copyWith({Counter counter, String name}) =>
-      CounterItemHiveImpl(counter ?? this.counter, name ?? this.name);
+  CounterItem copyWith({Counter counter, String name, int id}) =>
+      CounterItemHiveImpl(
+          counter: counter ?? this.counter,
+          name: name ?? this.name,
+          id: id ?? this.id);
 
   @override
   String toString() {

@@ -43,31 +43,22 @@ class TablesBloc extends Bloc<TablesEvent, TablesState> {
   }
 
   Stream<TablesState> _mapTableCreatedToState(TableCreated event) async* {
-    try {
-      await _tablesRepository.createTable(event.table);
-    } on NameExist catch (_) {
-      yield TableError("Counter table with this name already exist");
-    }
+    await _tablesRepository.save(event.table);
     yield* _mapLoadTablesToState();
   }
 
   Stream<TablesState> _mapTableDeletedToState(TableDeleted event) async* {
-    await _tablesRepository.deleteTable(event.table);
-    yield* _mapLoadTablesToState();
+    await _tablesRepository.remove(event.table);
+//    yield* _mapLoadTablesToState();
   }
 
   Stream<TablesState> _mapTableUpdatedToState(TableUpdated event) async* {
-    try {
-      await _tablesRepository.updateTable(event.table);
-    } on NameExist catch (_) {
-      yield TableError("Counter table with this name already exist");
-    }
+    await _tablesRepository.save(event.table);
     yield* _mapLoadTablesToState();
   }
 
   Stream<TablesState> _mapTablesReorderedToState(TablesReordered event) async* {
-    await _tablesRepository.removeAll();
-    await _tablesRepository.addAll(event.reorderedTables);
+    final reordered = await _tablesRepository.reorder(event.reorderedTables);
   }
 }
 

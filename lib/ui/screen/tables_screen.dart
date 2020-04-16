@@ -77,7 +77,7 @@ class TablesListScreen extends StatelessWidget {
           context: context,
           child: TableSettings(
             table: RepositoryProvider.of<TablesRepository>(context)
-                .emptyTable
+                .newTable
                 .copyWith(position: tables.length),
             onUpdate: (newTable) {
               BlocProvider.of<TablesBloc>(context).add(TableCreated(newTable));

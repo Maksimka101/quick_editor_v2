@@ -8,9 +8,6 @@ part of 'counter.dart';
 
 class IntCounterHiveImplAdapter extends TypeAdapter<IntCounterHiveImpl> {
   @override
-  final typeId = 2;
-
-  @override
   IntCounterHiveImpl read(BinaryReader reader) {
     var numOfFields = reader.readByte();
     var fields = <int, dynamic>{
@@ -28,4 +25,7 @@ class IntCounterHiveImplAdapter extends TypeAdapter<IntCounterHiveImpl> {
       ..writeByte(0)
       ..write(obj._value);
   }
+
+  @override
+  int get typeId => 2;
 }
