@@ -4,6 +4,7 @@ import '../abstract/table_item.dart';
 
 part 'table.g.dart';
 
+// todo: remove hive object dependency
 @HiveType(typeId: 0)
 class TableHiveImpl extends Table {
   @override
